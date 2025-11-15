@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: note-article-generator
+    env: python
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app.main:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: LLM_PROVIDER
+        sync: false
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_MODEL_AGENT1
+        value: claude-3-5-sonnet-20241022
+      - key: LLM_MODEL_AGENT2
+        value: claude-3-5-sonnet-20241022
+      - key: LLM_AGENT1_MAX_TOKENS
+        value: 6000
+      - key: LLM_AGENT2_MAX_TOKENS
+        value: 4000
+      - key: MONTHLY_TOKEN_LIMIT
+        value: 300000
+      - key: GOOGLE_SHEETS_SPREADSHEET_ID
+        sync: false
+      - key: GSHEET_NOTE_LOGS_SHEET
+        value: Note_Logs
+      - key: GOOGLE_APPLICATION_CREDENTIALS_JSON
+        sync: false
