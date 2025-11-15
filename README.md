@@ -118,6 +118,20 @@ pytest tests/
 
 ## デプロイ
 
+### クイックスタート（自動化スクリプト使用）
+
+Renderへのデプロイを自動化するスクリプトを用意しています：
+
+```bash
+# 1. 環境変数の設定支援
+./scripts/setup-render-env.sh
+
+# 2. Renderへのデプロイ実行
+./scripts/deploy-to-render.sh
+```
+
+### 手動デプロイ
+
 詳細は `docs/deploy.md` を参照してください。
 
 ## ライセンス
