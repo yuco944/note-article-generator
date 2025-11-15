@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}新規記事生成 - Note記事自動生成システム{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>新しい記事を生成</h2>
+    <form method="POST" action="/ui/notes/new">
+        <div class="form-group">
+            <label for="topic">トピック *</label>
+            <input
+                type="text"
+                id="topic"
+                name="topic"
+                required
+                placeholder="例: AI副業で月5万円稼ぐ方法"
+                value="{{ form_data.topic if form_data else '' }}"
+            >
+            <div class="help-text">記事のメインテーマを入力してください</div>
+        </div>
+
+        <div class="form-group">
+            <label for="audience">ターゲット読者 *</label>
+            <input
+                type="text"
+                id="audience"
+                name="audience"
+                required
+                placeholder="例: 副業初心者"
+                value="{{ form_data.audience if form_data else '' }}"
+            >
+            <div class="help-text">どのような読者に向けた記事ですか？</div>
+        </div>
+
+        <div class="form-group">
+            <label for="goal">記事の目的 *</label>
+            <textarea
+                id="goal"
+                name="goal"
+                required
+                placeholder="例: 具体的な稼ぎ方を教える、読者の不安を解消する"
+            >{{ form_data.goal if form_data else '' }}</textarea>
+            <div class="help-text">この記事で何を達成したいですか？</div>
+        </div>
+
+        <div class="form-group">
+            <label for="article_type">記事タイプ *</label>
+            <select id="article_type" name="article_type" required>
+                <option value="education" {% if form_data and form_data.article_type == 'education' %}selected{% endif %}>教育・解説系</option>
+                <option value="story" {% if form_data and form_data.article_type == 'story' %}selected{% endif %}>ストーリー・体験談系</option>
+                <option value="case" {% if form_data and form_data.article_type == 'case' %}selected{% endif %}>事例紹介系</option>
+            </select>
+            <div class="help-text">記事のスタイルを選択してください</div>
+        </div>
+
+        <div class="form-group">
+            <label for="length_class">記事の長さ *</label>
+            <select id="length_class" name="length_class" required>
+                <option value="short" {% if form_data and form_data.length_class == 'short' %}selected{% endif %}>短め（2000-3000字）</option>
+                <option value="middle" {% if form_data and form_data.length_class == 'middle' %}selected{% endif %}>標準（4000-6000字）</option>
+                <option value="long" {% if form_data and form_data.length_class == 'long' %}selected{% endif %}>長め（7000-10000字）</option>
+            </select>
+            <div class="help-text">記事のボリュームを選択してください</div>
+        </div>
+
+        <div class="form-group">
+            <label for="temperature">
+                創造性レベル（Temperature）
+                <span class="range-display" id="temperature-display">0.7</span>
+            </label>
+            <input
+                type="range"
+                id="temperature"
+                name="temperature"
+                min="0"
+                max="2"
+                step="0.1"
+                value="{{ form_data.temperature if form_data else '0.7' }}"
+                oninput="document.getElementById('temperature-display').textContent = this.value"
+                style="width: 100%;"
+            >
+            <div class="help-text">0.0（保守的）〜 2.0（創造的）。推奨: 0.7-1.0</div>
+        </div>
+
+        <div class="form-group">
+            <label for="intensity_level">
+                文章の強度（訴求力）
+                <span class="range-display" id="intensity-display">5</span>
+            </label>
+            <input
+                type="range"
+                id="intensity_level"
+                name="intensity_level"
+                min="1"
+                max="10"
+                step="1"
+                value="{{ form_data.intensity_level if form_data else '5' }}"
+                oninput="document.getElementById('intensity-display').textContent = this.value"
+                style="width: 100%;"
+            >
+            <div class="help-text">1（控えめ）〜 10（強め）。推奨: 5-7</div>
+        </div>
+
+        <div class="form-group" style="text-align: center; margin-top: 30px;">
+            <button type="submit" class="btn">記事を生成する</button>
+            <a href="/ui/notes" class="btn btn-secondary" style="text-decoration: none; display: inline-block;">履歴を見る</a>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <h2>使い方のヒント</h2>
+    <ul style="line-height: 2;">
+        <li><strong>トピック:</strong> 具体的なテーマを入力すると、より的確な記事が生成されます</li>
+        <li><strong>ターゲット読者:</strong> 「初心者」「経営者」「主婦」など、具体的に指定しましょう</li>
+        <li><strong>記事タイプ:</strong> 教育系は解説・ノウハウ、ストーリー系は体験談、事例系は成功事例向け</li>
+        <li><strong>Temperature:</strong> 0.7-1.0 が最もバランスが良い設定です</li>
+        <li><strong>強度:</strong> 5-7 が自然な訴求力。10に近づくほど強調表現が増えます</li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // ページ読み込み時に現在の値を表示
+    document.addEventListener('DOMContentLoaded', function() {
+        const tempInput = document.getElementById('temperature');
+        const intensityInput = document.getElementById('intensity_level');
+
+        document.getElementById('temperature-display').textContent = tempInput.value;
+        document.getElementById('intensity-display').textContent = intensityInput.value;
+    });
+</script>
+{% endblock %}

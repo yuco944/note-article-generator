@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}生成結果 - Note記事自動生成システム{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-section {
+        background: #f9f9f9;
+        border-left: 4px solid #667eea;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+    }
+
+    .result-section h3 {
+        color: #667eea;
+        margin-bottom: 15px;
+        font-size: 20px;
+    }
+
+    .result-section .content {
+        white-space: pre-wrap;
+        line-height: 1.8;
+        color: #333;
+    }
+
+    .metadata {
+        background: #f0f0f0;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+    }
+
+    .metadata-item {
+        display: inline-block;
+        margin-right: 20px;
+        margin-bottom: 10px;
+    }
+
+    .metadata-label {
+        font-weight: 600;
+        color: #666;
+    }
+
+    .copy-btn {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-left: 10px;
+    }
+
+    .copy-btn:hover {
+        background: #218838;
+    }
+
+    .action-buttons {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .note-id {
+        font-family: monospace;
+        background: #e9ecef;
+        padding: 4px 8px;
+        border-radius: 3px;
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>記事生成完了</h2>
+
+    <div class="metadata">
+        <div class="metadata-item">
+            <span class="metadata-label">記事ID:</span>
+            <span class="note-id">{{ result.note_id }}</span>
+        </div>
+        <div class="metadata-item">
+            <span class="metadata-label">トピック:</span>
+            {{ result.metadata.topic }}
+        </div>
+        <div class="metadata-item">
+            <span class="metadata-label">ターゲット:</span>
+            {{ result.metadata.audience }}
+        </div>
+        <div class="metadata-item">
+            <span class="metadata-label">記事タイプ:</span>
+            {{ result.metadata.article_type }}
+        </div>
+        <div class="metadata-item">
+            <span class="metadata-label">トークン使用量:</span>
+            {{ result.metadata.token_usage.total_tokens }} tokens
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>
+        タイトル
+        <button class="copy-btn" onclick="copyToClipboard('title-content')">コピー</button>
+    </h2>
+    <div class="result-section">
+        <div class="content" id="title-content">{{ result.title }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>
+        リード文
+        <button class="copy-btn" onclick="copyToClipboard('lead-content')">コピー</button>
+    </h2>
+    <div class="result-section">
+        <div class="content" id="lead-content">{{ result.lead }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>本文セクション</h2>
+    {% for section in result.sections %}
+    <div class="result-section">
+        <h3>
+            {{ section.heading }}
+            <button class="copy-btn" onclick="copyToClipboard('section-{{ loop.index }}')">コピー</button>
+        </h3>
+        <div class="content" id="section-{{ loop.index }}">{{ section.body }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="card">
+    <h2>
+        CTA（行動喚起）
+        <button class="copy-btn" onclick="copyToClipboard('cta-content')">コピー</button>
+    </h2>
+    <div class="result-section">
+        <div class="content" id="cta-content">{{ result.cta }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>
+        全文コピー
+        <button class="copy-btn" onclick="copyFullArticle()">全文をコピー</button>
+    </h2>
+    <p style="color: #666;">タイトル、リード、本文、CTAを含む完全な記事をクリップボードにコピーします。</p>
+</div>
+
+<div class="action-buttons">
+    <a href="/ui/notes/new" class="btn">新しい記事を生成</a>
+    <a href="/ui/notes" class="btn btn-secondary" style="text-decoration: none; display: inline-block;">生成履歴を見る</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function copyToClipboard(elementId) {
+        const element = document.getElementById(elementId);
+        const text = element.textContent;
+
+        navigator.clipboard.writeText(text).then(() => {
+            alert('コピーしました！');
+        }).catch(err => {
+            console.error('コピー失敗:', err);
+            alert('コピーに失敗しました');
+        });
+    }
+
+    function copyFullArticle() {
+        const title = document.getElementById('title-content').textContent;
+        const lead = document.getElementById('lead-content').textContent;
+
+        // 本文セクションを結合
+        const sections = [];
+        {% for section in result.sections %}
+        sections.push(document.getElementById('section-{{ loop.index }}').textContent);
+        {% endfor %}
+        const body = sections.join('\n\n');
+
+        const cta = document.getElementById('cta-content').textContent;
+
+        const fullArticle = `${title}\n\n${lead}\n\n${body}\n\n${cta}`;
+
+        navigator.clipboard.writeText(fullArticle).then(() => {
+            alert('全文をコピーしました！');
+        }).catch(err => {
+            console.error('コピー失敗:', err);
+            alert('コピーに失敗しました');
+        });
+    }
+</script>
+{% endblock %}
