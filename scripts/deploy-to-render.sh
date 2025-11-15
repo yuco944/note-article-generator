@@ -51,22 +51,22 @@ fi
 # 2. 認証確認
 echo ""
 echo -e "${YELLOW}[2/6] Render認証の確認...${NC}"
-if ! render auth whoami &> /dev/null; then
+if ! render whoami &> /dev/null; then
     echo -e "${YELLOW}Renderにログインしていません。${NC}"
     echo "以下のコマンドでログインしてください:"
-    echo "  render auth login"
+    echo "  render login"
     echo ""
     read -p "今すぐログインしますか？ (y/n): " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        render auth login
+        render login
     else
         echo -e "${RED}認証が必要です。後で実行してください。${NC}"
         exit 1
     fi
 else
     echo -e "${GREEN}✓ Renderに認証済み${NC}"
-    render auth whoami
+    render whoami
 fi
 
 # 3. 必須環境変数の確認

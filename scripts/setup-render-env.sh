@@ -104,22 +104,14 @@ if command -v render &> /dev/null; then
         read -p "サービスIDを入力してください: " SERVICE_ID
         if [ -n "$SERVICE_ID" ]; then
             echo "環境変数を設定しています..."
-            
-            if [ -n "${LLM_API_KEY:-}" ]; then
-                render env set LLM_API_KEY="$LLM_API_KEY" --service "$SERVICE_ID"
-            fi
-            
-            if [ -n "${GOOGLE_SHEETS_SPREADSHEET_ID:-}" ]; then
-                render env set GOOGLE_SHEETS_SPREADSHEET_ID="$GOOGLE_SHEETS_SPREADSHEET_ID" --service "$SERVICE_ID"
-            fi
-            
-            if [ -n "${GOOGLE_APPLICATION_CREDENTIALS_JSON:-}" ]; then
-                render env set GOOGLE_APPLICATION_CREDENTIALS_JSON="$GOOGLE_APPLICATION_CREDENTIALS_JSON" --service "$SERVICE_ID"
-            fi
-            
-            render env set ADMIN_API_KEY="$ADMIN_API_KEY" --service "$SERVICE_ID"
-            
-            echo -e "${GREEN}✓ 環境変数を設定しました${NC}"
+            echo -e "${YELLOW}注意: Render CLIの環境変数設定コマンドは、Renderダッシュボードで手動で設定することを推奨します。${NC}"
+            echo "以下の環境変数をRenderダッシュボードで設定してください:"
+            echo "  - LLM_API_KEY"
+            echo "  - GOOGLE_SHEETS_SPREADSHEET_ID"
+            echo "  - GOOGLE_APPLICATION_CREDENTIALS_JSON"
+            echo "  - ADMIN_API_KEY"
+            echo ""
+            echo "詳細は生成された $ENV_FILE を参照してください。"
         fi
     fi
 fi
