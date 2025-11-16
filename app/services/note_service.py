@@ -82,9 +82,17 @@ class NoteService:
         except ValidationError:
             raise
         except Exception as e:
+            # 詳細なエラーログを出力
+            import traceback
+            error_trace = traceback.format_exc()
+            print(f"❌❌❌ 記事生成エラー詳細 ❌❌❌")
+            print(f"エラー: {e}")
+            print(f"トレースバック:\n{error_trace}")
+            print(f"❌❌❌❌❌❌❌❌❌❌❌❌❌❌")
+
             raise InternalError(
                 message='記事生成中にエラーが発生しました',
-                details={'error': str(e)}
+                details={'error': str(e), 'traceback': error_trace}
             )
 
     def _validate_request(self, request_data: dict) -> GenerateNoteRequest:
