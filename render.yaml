@@ -17,9 +17,9 @@ services:
       - key: LLM_API_KEY
         sync: false
       - key: LLM_MODEL_AGENT1
-        value: claude-3-5-sonnet-20241022
+        value: claude-3-5-sonnet-20240620
       - key: LLM_MODEL_AGENT2
-        value: claude-3-5-sonnet-20241022
+        value: claude-3-5-sonnet-20240620
       - key: LLM_AGENT1_MAX_TOKENS
         value: 6000
       - key: LLM_AGENT2_MAX_TOKENS
